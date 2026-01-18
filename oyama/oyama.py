@@ -127,6 +127,19 @@ def run(model_url: str = None, model_path: str = None, modelfile: str = "") -> s
     try:
         CommandRunner(f"ollama --version").run()
     except:
+        try:
+            CommandRunner("zstd --version").run()
+        except:
+            print("zstd not found. Attempting to install...")
+            # Try to install zstd using common package managers.
+            # This is a best-effort attempt to fix the dependency issue.
+            try:
+                CommandRunner(
+                    "sudo apt-get install -y zstd || apt-get install -y zstd || sudo dnf install -y zstd || sudo pacman -S --noconfirm zstd"
+                ).run()
+            except:
+                print("Failed to install zstd automatically. Please install it manually.")
+
         CommandRunner("curl -fsSL https://ollama.com/install.sh | sh").run()
         pass
 
